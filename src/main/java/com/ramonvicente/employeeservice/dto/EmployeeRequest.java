@@ -24,7 +24,7 @@ public class EmployeeRequest {
     @NotBlank
     private String lastName;
     @NotBlank
-    @Pattern(regexp = "^\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$")
+    @Pattern(regexp = "^\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$", message = "should have format 'YYYY-MM-DD'")
     private String birthday;
     @NotEmpty
     private List<String> hobbies;

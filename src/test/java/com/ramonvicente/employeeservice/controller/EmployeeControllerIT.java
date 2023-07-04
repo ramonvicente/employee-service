@@ -1,4 +1,4 @@
-package com.ramonvicente.employeeservice;
+package com.ramonvicente.employeeservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ramonvicente.employeeservice.dto.EmployeeRequest;
@@ -41,6 +41,27 @@ public class EmployeeControllerIT {
                 .andExpect(MockMvcResultMatchers
                         .status()
                         .isCreated());
+    }
+
+    @Test
+    @DisplayName("Should return status bad request when request has invalid field.")
+    public void returnStatusBadRequestWhenEmployeeRequestHasInvalidField() throws Exception {
+
+        EmployeeRequest request = EmployeeRequest.builder()
+            .email("wrong-email")
+            .firstName("first")
+            .lastName("last33")
+            .birthday("1996-03-12")
+            .hobbies(List.of("hobby1"))
+            .build();
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/api/v1/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJsonString(request)))
+            .andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest());
     }
 
     private String toJsonString(Object obj) {

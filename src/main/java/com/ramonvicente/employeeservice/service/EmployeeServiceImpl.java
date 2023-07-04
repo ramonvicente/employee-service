@@ -8,9 +8,6 @@ import com.ramonvicente.employeeservice.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 @Slf4j
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
