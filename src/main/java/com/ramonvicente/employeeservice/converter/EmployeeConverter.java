@@ -16,6 +16,16 @@ public class EmployeeConverter {
             .build();
     }
 
+    public static Employee toEmployee(EmployeeRequest request, String employeeId) {
+        return Employee.builder()
+            .id(employeeId)
+            .email(request.getEmail())
+            .fullName(String.format("%s %s", request.getFirstName(), request.getLastName()))
+            .birthday(request.getBirthday())
+            .hobbies(request.getHobbies())
+            .build();
+    }
+
     public static EmployeeIdResult toEmployeeIdResult(Employee employee) {
         return  EmployeeIdResult.builder()
             .id(employee.getId())
