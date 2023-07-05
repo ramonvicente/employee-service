@@ -8,16 +8,15 @@ import com.ramonvicente.employeeservice.dto.EmployeeRequest;
 import com.ramonvicente.employeeservice.dto.EmployeeResponse;
 import com.ramonvicente.employeeservice.exception.http.ConflictException;
 import com.ramonvicente.employeeservice.exception.http.NotFoundException;
+import com.ramonvicente.employeeservice.message.MessageProducer;
 import com.ramonvicente.employeeservice.model.Employee;
 import com.ramonvicente.employeeservice.repository.EmployeeRepository;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import static com.ramonvicente.employeeservice.utils.Utility.checkArgument;
 
-@Slf4j
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
@@ -25,6 +24,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     public static final String ERROR_MESSAGE_EMPLOYEE_NOT_FOUND = "There is no record for employee with id %s.";
     
     private final EmployeeRepository employeeRepository;
+
+    private final MessageProducer messageProducer;
 
     @Override
     public EmployeeIdResult createEmployee(@Valid EmployeeRequest employeeRequest) {
@@ -34,7 +35,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employeeToSave = EmployeeConverter.toEmployee(employeeRequest);
 
         Employee newEmployee = employeeRepository.save(employeeToSave);
-        log.info("Saving employee: {}", newEmployee.getId());
+        messageProducer.sendMessage("employee-topic", String.format("Saving employee with id: %s", newEmployee.getId()));
 
         return EmployeeConverter.toEmployeeIdResult(newEmployee);
     }
