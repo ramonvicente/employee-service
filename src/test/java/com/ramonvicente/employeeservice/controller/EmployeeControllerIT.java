@@ -2,8 +2,14 @@ package com.ramonvicente.employeeservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ramonvicente.employeeservice.dto.EmployeeRequest;
+import com.ramonvicente.employeeservice.model.Employee;
+import com.ramonvicente.employeeservice.repository.EmployeeRepository;
+
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,16 +17,28 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
 import java.util.List;
+
+import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 
 @SpringBootTest(properties = {"spring.data.mongodb.database=employees-test"})
 @AutoConfigureMockMvc(addFilters = false)
+@TestInstance(Lifecycle.PER_CLASS)
 public class EmployeeControllerIT {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    @BeforeAll
+    public void setup() {
+        employeeRepository.deleteAll(); //remove all data from db test
+        addEmployeeToDB();
+    }
 
     @Test
     @DisplayName("Return status created when create new employee.")
@@ -64,6 +82,17 @@ public class EmployeeControllerIT {
                 .isBadRequest());
     }
 
+    @Test
+    @DisplayName("Return status ok when find employees.")
+    public void returnStatusOkWhenFindEmployees() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/v1/employees"))
+                .andExpect(MockMvcResultMatchers
+                        .status()
+                        .isOk())
+                .andExpect(jsonPath("$.*", hasSize(1)));
+    }
+
     private String toJsonString(Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);
@@ -72,4 +101,14 @@ public class EmployeeControllerIT {
         }
     }
 
+    private void addEmployeeToDB() {
+        Employee employee = Employee.builder()
+                .email("employee@test.com")
+                .fullName("full name")
+                .birthday("1994-12-23")
+                .hobbies(List.of("hobby1", "hobby2"))
+                .build();
+
+        employeeRepository.save(employee);
+    }
 }

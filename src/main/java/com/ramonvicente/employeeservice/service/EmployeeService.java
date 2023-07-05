@@ -1,7 +1,10 @@
 package com.ramonvicente.employeeservice.service;
 
+import java.util.List;
+
 import com.ramonvicente.employeeservice.dto.EmployeeIdResult;
 import com.ramonvicente.employeeservice.dto.EmployeeRequest;
+import com.ramonvicente.employeeservice.dto.EmployeeResponse;
 import com.ramonvicente.employeeservice.model.Employee;
 
 public interface EmployeeService {
@@ -12,4 +15,11 @@ public interface EmployeeService {
      * @return {@link EmployeeIdResult} DTO containing the saved {@link Employee} data.
      */
     public EmployeeIdResult createEmployee(EmployeeRequest employeeRequest);
+
+    
+    /**
+     * Get list of all {@link Employee} from the database.
+     * @return list of {@link EmployeeResponse} DTO containing the {@link Employee} data.
+     */
+    public List<EmployeeResponse> findEmployees();
 }
