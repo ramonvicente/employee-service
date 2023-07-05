@@ -65,7 +65,7 @@ public class EmployeeServiceImplTests {
             .email("test@test.com")
             .build();
 
-        Mockito.when(employeeRepository.findByEmail(request.getEmail())).thenReturn(Mockito.any(Employee.class));
+        Mockito.when(employeeRepository.findByEmail(request.getEmail())).thenReturn(new Employee());
 
         //then
         Assert.assertThrows(EmailConflictException.class, () -> {

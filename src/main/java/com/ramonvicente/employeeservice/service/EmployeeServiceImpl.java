@@ -9,6 +9,8 @@ import com.ramonvicente.employeeservice.dto.EmployeeResponse;
 import com.ramonvicente.employeeservice.exception.http.EmailConflictException;
 import com.ramonvicente.employeeservice.model.Employee;
 import com.ramonvicente.employeeservice.repository.EmployeeRepository;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,7 +21,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
 
     @Override
-    public EmployeeIdResult createEmployee(EmployeeRequest employeeRequest) {
+    public EmployeeIdResult createEmployee(@Valid EmployeeRequest employeeRequest) {
         if(employeeRequest == null) {
             throw new IllegalArgumentException();
         }
