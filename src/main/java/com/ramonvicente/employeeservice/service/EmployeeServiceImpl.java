@@ -3,6 +3,7 @@ package com.ramonvicente.employeeservice.service;
 import com.ramonvicente.employeeservice.converter.EmployeeConverter;
 import com.ramonvicente.employeeservice.dto.EmployeeIdResult;
 import com.ramonvicente.employeeservice.dto.EmployeeRequest;
+import com.ramonvicente.employeeservice.exception.http.EmailConflictException;
 import com.ramonvicente.employeeservice.model.Employee;
 import com.ramonvicente.employeeservice.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if(employeeRequest == null) {
             throw new IllegalArgumentException();
         }
+        validateEmail(employeeRequest.getEmail());
 
         Employee employeeToSave = EmployeeConverter.toEmployee(employeeRequest);
 
@@ -26,5 +28,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         log.info("Saving employee: {}", newEmployee.getId());
 
         return EmployeeConverter.toEmployeeIdResult(newEmployee);
+    }
+
+    private void validateEmail(String email) {
+        if(employeeRepository.findByEmail(email) == null) {
+            throw new EmailConflictException(String.format("Employee with email '%s' already exist.", email));
+        }
     }
 }

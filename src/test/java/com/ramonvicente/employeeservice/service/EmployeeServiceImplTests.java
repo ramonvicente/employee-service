@@ -2,6 +2,7 @@ package com.ramonvicente.employeeservice.service;
 
 import com.ramonvicente.employeeservice.dto.EmployeeIdResult;
 import com.ramonvicente.employeeservice.dto.EmployeeRequest;
+import com.ramonvicente.employeeservice.exception.http.EmailConflictException;
 import com.ramonvicente.employeeservice.model.Employee;
 import com.ramonvicente.employeeservice.repository.EmployeeRepository;
 import org.junit.Assert;
@@ -52,6 +53,22 @@ public class EmployeeServiceImplTests {
     public void throwExceptionWhenCreateEmployeeWithRequestNull() {
         Assert.assertThrows(IllegalArgumentException.class, () -> {
             employeeService.createEmployee(null);
+        });
+    }
+
+    @Test
+    @DisplayName("Should throw exception when create employee given request with existing email.")
+    public void throwExceptionWhenCreateEmployeeWithExistingEmail() {
+        //given
+        EmployeeRequest request = EmployeeRequest.builder()
+            .email("test@test.com")
+            .build();
+
+        Mockito.when(employeeRepository.findByEmail(request.getEmail())).thenReturn(Mockito.any(Employee.class));
+
+        //then
+        Assert.assertThrows(EmailConflictException.class, () -> {
+            employeeService.createEmployee(request);
         });
     }
 }

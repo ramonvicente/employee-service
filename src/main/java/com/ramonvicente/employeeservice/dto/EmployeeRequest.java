@@ -26,6 +26,6 @@ public class EmployeeRequest {
     @NotBlank
     @Pattern(regexp = "^\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$", message = "should have format 'YYYY-MM-DD'")
     private String birthday;
-    @NotEmpty
+    @NotEmpty //TODO validate blank values on list
     private List<String> hobbies;
 }

@@ -3,6 +3,7 @@ package com.ramonvicente.employeeservice.exception;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import com.ramonvicente.employeeservice.exception.http.EmailConflictException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,17 @@ public class GlobalExceptionHandler {
             .timeStamp(ZonedDateTime.now())
             .build();
         return new ResponseEntity<>(apiExceptionResponse, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(EmailConflictException.class)
+    public final ResponseEntity<ApiExceptionResponse> handleEmailConflictExceptions(RuntimeException exception) {
+        ApiExceptionResponse apiExceptionResponse = ApiExceptionResponse.builder()
+            .status(HttpStatus.CONFLICT.value())
+            .error(HttpStatus.CONFLICT)
+            .message(exception.getMessage())
+            .timeStamp(ZonedDateTime.now())
+            .build();
+        return new ResponseEntity<>(apiExceptionResponse, new HttpHeaders(), HttpStatus.CONFLICT);
     }
 
     private List<Violation> getViolations(MethodArgumentNotValidException ex) {
