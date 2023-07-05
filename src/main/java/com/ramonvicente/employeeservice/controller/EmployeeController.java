@@ -13,6 +13,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -59,5 +60,11 @@ public class EmployeeController {
     public EmployeeResponse updateEmployee(@PathVariable String id, 
             @Valid @RequestBody EmployeeRequest request) {
         return employeeService.updateEmployee(id, request);
+    }
+
+    @DeleteMapping(value = "/employees/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteEmployee(@PathVariable String id) {
+        employeeService.deleteEmployeeById(id);
     }
 }
