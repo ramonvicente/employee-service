@@ -3,7 +3,8 @@ package com.ramonvicente.employeeservice.service;
 import com.ramonvicente.employeeservice.dto.EmployeeIdResult;
 import com.ramonvicente.employeeservice.dto.EmployeeRequest;
 import com.ramonvicente.employeeservice.dto.EmployeeResponse;
-import com.ramonvicente.employeeservice.exception.http.EmailConflictException;
+import com.ramonvicente.employeeservice.exception.http.ConflictException;
+import com.ramonvicente.employeeservice.exception.http.NotFoundException;
 import com.ramonvicente.employeeservice.model.Employee;
 import com.ramonvicente.employeeservice.repository.EmployeeRepository;
 import org.junit.Assert;
@@ -17,6 +18,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 public class EmployeeServiceImplTests {
@@ -68,7 +70,7 @@ public class EmployeeServiceImplTests {
         Mockito.when(employeeRepository.findByEmail(request.getEmail())).thenReturn(new Employee());
 
         //then
-        Assert.assertThrows(EmailConflictException.class, () -> {
+        Assert.assertThrows(ConflictException.class, () -> {
             employeeService.createEmployee(request);
         });
     }
@@ -107,5 +109,71 @@ public class EmployeeServiceImplTests {
         //then
         Assertions.assertNotNull(result);
         Assertions.assertTrue(result.size() == 0);
+    }
+
+    @Test
+    @DisplayName("Should return employee when find employee by id given valid argument.")
+    public void returnEmployeeWhenFindEmployeeById() {
+        //given
+        String employeeId = "employee-id";
+        Employee employee = Employee.builder()
+                .id(employeeId)
+                .email("test@test.com")
+                .fullName("full name")
+                .birthday("1994-12-23")
+                .hobbies(List.of("hobby1", "hobby2"))
+                .build();
+
+        Mockito.when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
+
+        //when
+        EmployeeResponse result = employeeService.findEmployeeByID(employeeId);
+
+        //then
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(employeeId, result.getId());
+    }
+
+    @Test
+    @DisplayName("Should throw exception when find employee by id given empty argument.")
+    public void throwExceptionWhenFindEmployeeByIdWithGivenEmptyArgument() {
+
+        IllegalArgumentException exception = Assert.assertThrows(IllegalArgumentException.class, () -> {
+            employeeService.findEmployeeByID("");
+        });
+
+        Assertions.assertEquals(EmployeeServiceImpl.ERROR_MESSAGE_EMPLOYEE_ID_MUST_HAVE_VALUE, exception.getMessage());
+
+    }
+
+    @Test
+    @DisplayName("Should throw exception when find employee by id given null argument.")
+    public void throwExceptionWhenFindEmployeeByIdWithGivenNullArgument() {
+
+        IllegalArgumentException exception = Assert.assertThrows(IllegalArgumentException.class, () -> {
+            employeeService.findEmployeeByID(null);
+        });
+
+        Assertions.assertEquals(EmployeeServiceImpl.ERROR_MESSAGE_EMPLOYEE_ID_MUST_HAVE_VALUE, exception.getMessage());
+
+    }
+
+    @Test
+    @DisplayName("Should throw exception when find employee by id given not existing employee id.")
+    public void throwExceptionWhenFindEmployeeByIdWithGivenNotExistingEmployeeId() {
+        //given
+        String notExistingEmployeeId = "employee-id";
+
+        //when
+        NotFoundException exception = Assert.assertThrows(NotFoundException.class, () -> {
+            employeeService.findEmployeeByID(notExistingEmployeeId);
+        });
+
+        //then
+        String expectedMessage = 
+            String.format(EmployeeServiceImpl.ERROR_MESSAGE_EMPLOYEE_NOT_FOUND, notExistingEmployeeId);
+
+        Assertions.assertEquals(expectedMessage, exception.getMessage());
+
     }
 }
