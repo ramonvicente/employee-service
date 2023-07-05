@@ -32,4 +32,13 @@ public interface EmployeeService {
      * @return {@link EmployeeResponse} DTO containing the saved {@link Employee} data.
      */
     public EmployeeResponse findEmployeeByID(String employeeId);
+
+    /**
+     * Update {@link Employee} by id in the database provided by {@link EmployeeRequest}.
+     * 
+     * @param employeeId String containing employee id.
+     * @param employeeRequest DTO containing the {@link Employee} data to be updated.
+     * @return {@link EmployeeResponse} DTO containing the updated {@link Employee} data.
+     */
+    EmployeeResponse updateEmployee(String employeeId, EmployeeRequest employeeRequest);
 }

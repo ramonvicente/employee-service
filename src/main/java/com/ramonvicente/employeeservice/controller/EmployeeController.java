@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -51,5 +52,12 @@ public class EmployeeController {
     @ResponseStatus(HttpStatus.OK)
     public EmployeeResponse findEmployeeById(@PathVariable String id) {
         return employeeService.findEmployeeByID(id);
+    }
+
+    @PutMapping(value = "/employees/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public EmployeeResponse updateEmployee(@PathVariable String id, 
+            @Valid @RequestBody EmployeeRequest request) {
+        return employeeService.updateEmployee(id, request);
     }
 }

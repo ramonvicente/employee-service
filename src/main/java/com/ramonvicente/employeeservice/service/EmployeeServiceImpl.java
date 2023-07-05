@@ -15,6 +15,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.ramonvicente.employeeservice.utils.Utility.checkArgument;
+
 @Slf4j
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
@@ -26,9 +28,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeIdResult createEmployee(@Valid EmployeeRequest employeeRequest) {
-        if(employeeRequest == null) {
-            throw new IllegalArgumentException();
-        }
+        checkArgument(employeeRequest == null);
         validateEmail(employeeRequest.getEmail());
 
         Employee employeeToSave = EmployeeConverter.toEmployee(employeeRequest);
@@ -49,14 +49,28 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeResponse findEmployeeByID(String employeeId) {
-        if(employeeId == null || employeeId.isBlank()) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_EMPLOYEE_ID_MUST_HAVE_VALUE);
-        }
+        checkArgument(employeeId == null || employeeId.isBlank(), ERROR_MESSAGE_EMPLOYEE_ID_MUST_HAVE_VALUE);
 
         Employee employee = employeeRepository.findById(employeeId)
                                                 .orElseThrow(() -> new NotFoundException(String.format(ERROR_MESSAGE_EMPLOYEE_NOT_FOUND, employeeId)));
 
         return EmployeeConverter.toEmployeeResponse(employee);
+    }
+
+    @Override
+    public EmployeeResponse updateEmployee(String employeeId, EmployeeRequest employeeRequest) {
+        checkArgument(employeeId == null || employeeId.isBlank(), ERROR_MESSAGE_EMPLOYEE_ID_MUST_HAVE_VALUE);
+        checkArgument(employeeRequest == null);
+
+        if(!employeeRepository.existsById(employeeId)) {
+            throw new NotFoundException(String.format(ERROR_MESSAGE_EMPLOYEE_NOT_FOUND, employeeId));
+        }
+
+        Employee employeeToUpdate = EmployeeConverter.toEmployee(employeeRequest, employeeId);
+
+        Employee updatedEmployee = employeeRepository.save(employeeToUpdate);
+
+        return EmployeeConverter.toEmployeeResponse(updatedEmployee);
     }
 
     private void validateEmail(String email) {
