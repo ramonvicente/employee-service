@@ -6,6 +6,7 @@ import com.ramonvicente.employeeservice.dto.EmployeeRequest;
 import com.ramonvicente.employeeservice.dto.EmployeeResponse;
 import com.ramonvicente.employeeservice.exception.http.ConflictException;
 import com.ramonvicente.employeeservice.exception.http.NotFoundException;
+import com.ramonvicente.employeeservice.message.MessageProducer;
 import com.ramonvicente.employeeservice.model.Employee;
 import com.ramonvicente.employeeservice.repository.EmployeeRepository;
 import org.junit.Assert;
@@ -26,6 +27,9 @@ public class EmployeeServiceImplTests {
 
     @Mock
     private EmployeeRepository employeeRepository;
+
+    @Mock
+    private MessageProducer messageProducer;
 
     @InjectMocks
     private EmployeeServiceImpl employeeService;
