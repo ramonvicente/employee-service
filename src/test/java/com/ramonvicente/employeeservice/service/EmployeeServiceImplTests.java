@@ -2,6 +2,7 @@ package com.ramonvicente.employeeservice.service;
 
 import com.ramonvicente.employeeservice.dto.EmployeeIdResult;
 import com.ramonvicente.employeeservice.dto.EmployeeRequest;
+import com.ramonvicente.employeeservice.dto.EmployeeResponse;
 import com.ramonvicente.employeeservice.exception.http.EmailConflictException;
 import com.ramonvicente.employeeservice.model.Employee;
 import com.ramonvicente.employeeservice.repository.EmployeeRepository;
@@ -70,5 +71,41 @@ public class EmployeeServiceImplTests {
         Assert.assertThrows(EmailConflictException.class, () -> {
             employeeService.createEmployee(request);
         });
+    }
+
+    @Test
+    @DisplayName("Should return employee list when find employees")
+    public void returnAllEmployeesWhenFindEmployees() {
+        //given
+        Employee employee = Employee.builder()
+                .email("test@test.com")
+                .fullName("full name")
+                .birthday("1994-12-23")
+                .hobbies(List.of("hobby1", "hobby2"))
+                .build();
+
+        Mockito.when(employeeRepository.findAll()).thenReturn(List.of(employee));
+
+        //when
+        List<EmployeeResponse> result = employeeService.findEmployees();
+
+        //then
+        Assertions.assertNotNull(result);
+        Assertions.assertTrue(result.size() == 1);
+        Assertions.assertEquals("test@test.com", result.get(0).getEmail());
+    }
+
+    @Test
+    @DisplayName("Should return empty list when find employees has no employees")
+    public void returnEmptyWhenFindEmployees() {
+        //given
+        Mockito.when(employeeRepository.findAll()).thenReturn(List.of());
+
+        //when
+        List<EmployeeResponse> result = employeeService.findEmployees();
+
+        //then
+        Assertions.assertNotNull(result);
+        Assertions.assertTrue(result.size() == 0);
     }
 }

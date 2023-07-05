@@ -2,6 +2,7 @@ package com.ramonvicente.employeeservice.converter;
 
 import com.ramonvicente.employeeservice.dto.EmployeeIdResult;
 import com.ramonvicente.employeeservice.dto.EmployeeRequest;
+import com.ramonvicente.employeeservice.dto.EmployeeResponse;
 import com.ramonvicente.employeeservice.model.Employee;
 
 public class EmployeeConverter {
@@ -19,5 +20,15 @@ public class EmployeeConverter {
         return  EmployeeIdResult.builder()
             .id(employee.getId())
             .build();
+    }
+
+    public static EmployeeResponse toEmployeeResponse(Employee employee) {
+        return EmployeeResponse.builder()
+                                .id(employee.getId())
+                                .email(employee.getEmail())
+                                .fullName(employee.getFullName())
+                                .birthday(employee.getBirthday())
+                                .hobbies(employee.getHobbies())
+                                .build();
     }
 }
