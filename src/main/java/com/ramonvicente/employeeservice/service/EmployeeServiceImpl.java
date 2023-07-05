@@ -31,7 +31,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     private void validateEmail(String email) {
-        if(employeeRepository.findByEmail(email) == null) {
+        if(employeeRepository.findByEmail(email) != null) {
             throw new EmailConflictException(String.format("Employee with email '%s' already exist.", email));
         }
     }
