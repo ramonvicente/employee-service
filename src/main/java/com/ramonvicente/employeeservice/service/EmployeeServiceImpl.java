@@ -48,7 +48,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeResponse findEmployeeByID(String employeeId) {
+    public EmployeeResponse findEmployeeById(String employeeId) {
         checkArgument(employeeId == null || employeeId.isBlank(), ERROR_MESSAGE_EMPLOYEE_ID_MUST_HAVE_VALUE);
 
         Employee employee = employeeRepository.findById(employeeId)
@@ -71,6 +71,15 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee updatedEmployee = employeeRepository.save(employeeToUpdate);
 
         return EmployeeConverter.toEmployeeResponse(updatedEmployee);
+    }
+
+    @Override
+    public void deleteEmployeeById(String employeeId) {
+        checkArgument(employeeId == null || employeeId.isBlank(), ERROR_MESSAGE_EMPLOYEE_ID_MUST_HAVE_VALUE);
+
+        Employee employee = employeeRepository.findById(employeeId)
+                                                .orElseGet(null);
+        employeeRepository.delete(employee);
     }
 
     private void validateEmail(String email) {

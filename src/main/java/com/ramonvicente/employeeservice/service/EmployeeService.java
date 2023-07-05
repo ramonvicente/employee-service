@@ -31,7 +31,7 @@ public interface EmployeeService {
      * @param employeeId {@link String} the employee id.
      * @return {@link EmployeeResponse} DTO containing the saved {@link Employee} data.
      */
-    public EmployeeResponse findEmployeeByID(String employeeId);
+    public EmployeeResponse findEmployeeById(String employeeId);
 
     /**
      * Update {@link Employee} by id in the database provided by {@link EmployeeRequest}.
@@ -41,4 +41,10 @@ public interface EmployeeService {
      * @return {@link EmployeeResponse} DTO containing the updated {@link Employee} data.
      */
     EmployeeResponse updateEmployee(String employeeId, EmployeeRequest employeeRequest);
+
+    /**
+     * Delete {@link Employee} by id in the database.
+     * @param employeeId String containing employee id.
+     */
+    void deleteEmployeeById(String employeeId);
 }
