@@ -1,7 +1,9 @@
 package com.ramonvicente.employeeservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ramonvicente.employeeservice.converter.EmployeeConverter;
 import com.ramonvicente.employeeservice.dto.EmployeeRequest;
+import com.ramonvicente.employeeservice.dto.EmployeeResponse;
 import com.ramonvicente.employeeservice.model.Employee;
 import com.ramonvicente.employeeservice.repository.EmployeeRepository;
 
@@ -106,6 +108,30 @@ public class EmployeeControllerIT {
                 .andExpect(MockMvcResultMatchers
                         .status()
                         .isOk());
+    }
+
+    @Test
+    @DisplayName("Return status ok when update existing employee.")
+    public void returnStatusOkWhenUpdateExistingEmployee() throws Exception {
+
+        EmployeeRequest request = EmployeeRequest.builder()
+            .email("test@test.com")
+            .firstName("another")
+            .lastName("name")
+            .birthday("1996-03-12")
+            .hobbies(List.of("hobby1"))
+            .build();
+
+        EmployeeResponse response = EmployeeConverter.toEmployeeResponse(EmployeeConverter.toEmployee(request, EMPLOYEE_ID_2));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/api/v1/employees/" + EMPLOYEE_ID_2)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJsonString(request)))
+                .andExpect(MockMvcResultMatchers
+                        .status()
+                        .isOk())
+                .andExpect(MockMvcResultMatchers.content().string(toJsonString(response)));
     }
 
     private String toJsonString(Object obj) {

@@ -1,5 +1,6 @@
 package com.ramonvicente.employeeservice.service;
 
+import com.ramonvicente.employeeservice.converter.EmployeeConverter;
 import com.ramonvicente.employeeservice.dto.EmployeeIdResult;
 import com.ramonvicente.employeeservice.dto.EmployeeRequest;
 import com.ramonvicente.employeeservice.dto.EmployeeResponse;
@@ -174,6 +175,49 @@ public class EmployeeServiceImplTests {
             String.format(EmployeeServiceImpl.ERROR_MESSAGE_EMPLOYEE_NOT_FOUND, notExistingEmployeeId);
 
         Assertions.assertEquals(expectedMessage, exception.getMessage());
+    }
 
+    @Test
+    @DisplayName("Should return employee when update employee given valid request and employee id")
+    public void returnEmployeeWhenUpdateEmployee() {
+        //given
+        String employeeId = "employee-id";
+        EmployeeRequest request = EmployeeRequest.builder()
+                .email("test@test.com")
+                .firstName("newName")
+                .lastName("name2")
+                .birthday("1994-12-23")
+                .hobbies(List.of("hobby1", "hobby2"))
+                .build();
+
+        Mockito.when(employeeRepository.existsById(employeeId)).thenReturn(true);
+        Mockito.when(employeeRepository.save(Mockito.any(Employee.class))).thenReturn(EmployeeConverter.toEmployee(request, employeeId));
+
+        //when
+        EmployeeResponse result = employeeService.updateEmployee(employeeId, request);
+
+        //then
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals("employee-id", result.getId());
+        Assertions.assertEquals("newName name2", result.getFullName());
+    }
+
+    @Test
+    @DisplayName("Should throw exception when update employee given not existing employee.")
+    public void throwExceptionWhenUpdateEmployeeGivenNotExistingEmployee() {
+        //given
+        String notExistingEmployeeId = "employee-id";
+        Mockito.when(employeeRepository.existsById(notExistingEmployeeId)).thenReturn(false);
+
+        //when
+        NotFoundException exception = Assert.assertThrows(NotFoundException.class, () -> {
+            employeeService.updateEmployee(notExistingEmployeeId, EmployeeRequest.builder().build());
+        });
+
+        //then
+        String expectedMessage = 
+            String.format(EmployeeServiceImpl.ERROR_MESSAGE_EMPLOYEE_NOT_FOUND, notExistingEmployeeId);
+
+        Assertions.assertEquals(expectedMessage, exception.getMessage());
     }
 }
