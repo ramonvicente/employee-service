@@ -14,8 +14,10 @@ import com.ramonvicente.employeeservice.dto.auth.LoginRequest;
 import com.ramonvicente.employeeservice.dto.auth.RegistrationRequest;
 import com.ramonvicente.employeeservice.dto.auth.RegistrationResult;
 import com.ramonvicente.employeeservice.dto.auth.TokenResponse;
+import com.ramonvicente.employeeservice.exception.http.ConflictException;
 import com.ramonvicente.employeeservice.model.User;
 import com.ramonvicente.employeeservice.repository.UserRepository;
+import com.ramonvicente.employeeservice.utils.Utility;
 
 @Service
 @RequiredArgsConstructor
@@ -37,22 +39,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public RegistrationResult registerUser(RegistrationRequest registration) {
-        if(registration == null) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_REGISTRATION_NULL);
-        }
+        Utility.checkArgument(registration == null, ERROR_MESSAGE_REGISTRATION_NULL);
+
         String message;
         if (userRepository.findByUsername(registration.getUsername()) != null) {
             message = String.format(RESPONSE_MESSAGE_USER_ALREADY_EXIST, registration.getUsername());
-            return RegistrationResult.builder()
-                    .message(message)
-                    .build();
+            throw new ConflictException(message);
         }
+
         if (userRepository.findByEmail(registration.getEmail()) != null) {
             message = String.format(RESPONSE_MESSAGE_EMAIL_ALREADY_EXIST, registration.getUsername());
-            return RegistrationResult.builder()
-                    .message(message)
-                    .build();
+            throw new ConflictException(message);
         }
+
         User user = User.builder()
                 .email(registration.getEmail())
                 .username(registration.getUsername())
@@ -67,6 +66,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public TokenResponse login(LoginRequest loginRequest) {
+        Utility.checkArgument(loginRequest == null);
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
