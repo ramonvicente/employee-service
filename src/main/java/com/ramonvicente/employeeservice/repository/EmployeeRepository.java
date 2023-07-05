@@ -13,6 +13,6 @@ public interface EmployeeRepository extends MongoRepository<Employee, String> {
      * @param email is the email of the {@link Employee}.
      * @return {@link Employee} from the database.
      */
-    @Query("{ 'name' : ?0 }")
+    @Query("{ 'email' : ?0 }")
     public Employee findByEmail(String email);
 }
