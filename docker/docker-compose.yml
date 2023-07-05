@@ -1,0 +1,7 @@
+version: "3"
+services:
+  javatechiemongodb:
+    image: mongo:6.0
+    container_name: "employee-mongodb"
+    ports:
+      - 27017:27017
