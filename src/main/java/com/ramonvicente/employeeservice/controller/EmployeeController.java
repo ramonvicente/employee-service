@@ -67,4 +67,11 @@ public class EmployeeController {
     public void deleteEmployee(@PathVariable String id) {
         employeeService.deleteEmployeeById(id);
     }
+
+    @PutMapping(value = "/employees/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public EmployeeResponse updateEmployee(@PathVariable String id, 
+            @Valid @RequestBody EmployeeRequest request) {
+        return employeeService.updateEmployee(id, request);
+    }
 }
