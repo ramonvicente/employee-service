@@ -1,6 +1,7 @@
 # Employee Service
 This project is an application that handle with employee information of a company.
 
+
 ## SetUp and Run
 in order to run the application, use the terminal to run docker-compose.yml to set up database and kafka then run the application with gradle: 
 - ```cd docker```
