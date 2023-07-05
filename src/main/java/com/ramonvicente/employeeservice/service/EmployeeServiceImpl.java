@@ -2,6 +2,8 @@ package com.ramonvicente.employeeservice.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import com.ramonvicente.employeeservice.converter.EmployeeConverter;
 import com.ramonvicente.employeeservice.dto.EmployeeIdResult;
 import com.ramonvicente.employeeservice.dto.EmployeeRequest;
@@ -22,6 +24,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     public static final String ERROR_MESSAGE_EMPLOYEE_ID_MUST_HAVE_VALUE = "employeeId must have value.";
     public static final String ERROR_MESSAGE_EMPLOYEE_NOT_FOUND = "There is no record for employee with id %s.";
+
+    @Value("${employee.service.event.producer.topic}")
+    private String TOPIC;
     
     private final EmployeeRepository employeeRepository;
 
@@ -35,7 +40,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employeeToSave = EmployeeConverter.toEmployee(employeeRequest);
 
         Employee newEmployee = employeeRepository.save(employeeToSave);
-        messageProducer.sendMessage("employee-topic", String.format("Saving employee with id: %s", newEmployee.getId()));
+        messageProducer.sendMessage(TOPIC, String.format("Saving employee with id: %s", newEmployee.getId()));
 
         return EmployeeConverter.toEmployeeIdResult(newEmployee);
     }
@@ -70,6 +75,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employeeToUpdate = EmployeeConverter.toEmployee(employeeRequest, employeeId);
 
         Employee updatedEmployee = employeeRepository.save(employeeToUpdate);
+        messageProducer.sendMessage(TOPIC, String.format("Updating employee with id: %s", updatedEmployee.getId()));
 
         return EmployeeConverter.toEmployeeResponse(updatedEmployee);
     }
@@ -81,6 +87,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeRepository.findById(employeeId)
                                                 .orElseGet(null);
         employeeRepository.delete(employee);
+        messageProducer.sendMessage(TOPIC, String.format("Deleting employee with id: %s", employeeId));
     }
 
     private void validateEmail(String email) {
