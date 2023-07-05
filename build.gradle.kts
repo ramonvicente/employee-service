@@ -28,6 +28,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb:3.0.6")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
+	implementation("org.springframework.kafka:spring-kafka")
 
 
 	compileOnly("org.projectlombok:lombok:1.18.22")
