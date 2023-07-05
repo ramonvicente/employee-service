@@ -1,22 +1,51 @@
 # Employee Service
 This project is an application that handle with employee information of a company.
 
-## Endpoints
-GET findAllEmployees: 
+## SetUp
 
+## Endpoints
+- For information about the endpoints access the swagger documentation: http://localhost:8080/swagger-ui/index.html
+
+### create employee
 ```
 curl --location 'http://localhost:8080/api/v1/employees' \
---header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0IiwiaWF0IjoxNjg2MzM4Nzk0LCJleHAiOjE2ODY0MjUxOTR9.1-MolpIjGDhkvZ52HaVTpFn_ih7lsSzYvZFDLpcNdVw'
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "email": "email@test.com",
+    "firstName": "firstName",
+    "lastName": "lastname",
+    "birthday": "1992-02-02",
+    "hobbies": ["hobby1"]
+}'
 ```
 
-GET findEmployeeById:
-
+### get all employees
 ```
-curl --location --globoff 'http://localhost:8080/api/v1/employees/{id}' \
---header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0IiwiaWF0IjoxNjg2MzM4Nzk0LCJleHAiOjE2ODY0MjUxOTR9.1-MolpIjGDhkvZ52HaVTpFn_ih7lsSzYvZFDLpcNdVw'
+curl --location 'http://localhost:8080/api/v1/employees'
 ```
 
-## SetUp
+### get employee
+```
+curl --location 'http://localhost:8080/api/v1/employees/832b938e-b193-416a-9f33-776b266f86c1'
+```
+
+### update employee
+```
+curl --location --request PUT 'http://localhost:8080/api/v1/employees/832b938e-b193-416a-9f33-776b266f86c1' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "email": "email@test.com",
+    "firstName": "firstName",
+    "lastName": "lastname",
+    "birthday": "1992-12-12",
+    "hobbies": ["hobby1", "other"]
+}'
+```
+
+### Delete employee
+```
+curl --location --request DELETE 'http://localhost:8080/api/v1/employees/832b938e-b193-416a-9f33-776b266f86c1'
+```
 
 ## Comments
 
