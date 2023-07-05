@@ -3,7 +3,9 @@ package com.ramonvicente.employeeservice.exception;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import com.ramonvicente.employeeservice.exception.http.EmailConflictException;
+import com.ramonvicente.employeeservice.exception.http.ConflictException;
+import com.ramonvicente.employeeservice.exception.http.NotFoundException;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +20,6 @@ public class GlobalExceptionHandler {
         List<Violation> violations = getViolations(exception);
         ArgumentExceptionResponse argumentExceptionResponse = ArgumentExceptionResponse.builder()
             .status(HttpStatus.BAD_REQUEST.value())
-            .error(HttpStatus.BAD_REQUEST)
             .violations(violations)
             .timeStamp(ZonedDateTime.now())
             .build();
@@ -29,22 +30,30 @@ public class GlobalExceptionHandler {
     public final ResponseEntity<ApiExceptionResponse> handleRuntimeExceptions(RuntimeException exception) {
         ApiExceptionResponse apiExceptionResponse = ApiExceptionResponse.builder()
             .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-            .error(HttpStatus.INTERNAL_SERVER_ERROR)
             .message(exception.getMessage())
             .timeStamp(ZonedDateTime.now())
             .build();
         return new ResponseEntity<>(apiExceptionResponse, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(EmailConflictException.class)
-    public final ResponseEntity<ApiExceptionResponse> handleEmailConflictExceptions(RuntimeException exception) {
+    @ExceptionHandler(ConflictException.class)
+    public final ResponseEntity<ApiExceptionResponse> handleConflictExceptions(RuntimeException exception) {
         ApiExceptionResponse apiExceptionResponse = ApiExceptionResponse.builder()
             .status(HttpStatus.CONFLICT.value())
-            .error(HttpStatus.CONFLICT)
             .message(exception.getMessage())
             .timeStamp(ZonedDateTime.now())
             .build();
         return new ResponseEntity<>(apiExceptionResponse, new HttpHeaders(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public final ResponseEntity<ApiExceptionResponse> handleNotFoundExceptions(RuntimeException exception) {
+        ApiExceptionResponse apiExceptionResponse = ApiExceptionResponse.builder()
+            .status(HttpStatus.NOT_FOUND.value())
+            .message(exception.getMessage())
+            .timeStamp(ZonedDateTime.now())
+            .build();
+        return new ResponseEntity<>(apiExceptionResponse, new HttpHeaders(), HttpStatus.NOT_FOUND);
     }
 
     private List<Violation> getViolations(MethodArgumentNotValidException ex) {

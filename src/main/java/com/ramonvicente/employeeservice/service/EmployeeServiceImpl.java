@@ -6,7 +6,8 @@ import com.ramonvicente.employeeservice.converter.EmployeeConverter;
 import com.ramonvicente.employeeservice.dto.EmployeeIdResult;
 import com.ramonvicente.employeeservice.dto.EmployeeRequest;
 import com.ramonvicente.employeeservice.dto.EmployeeResponse;
-import com.ramonvicente.employeeservice.exception.http.EmailConflictException;
+import com.ramonvicente.employeeservice.exception.http.ConflictException;
+import com.ramonvicente.employeeservice.exception.http.NotFoundException;
 import com.ramonvicente.employeeservice.model.Employee;
 import com.ramonvicente.employeeservice.repository.EmployeeRepository;
 
@@ -18,6 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
+    public static final String ERROR_MESSAGE_EMPLOYEE_ID_MUST_HAVE_VALUE = "employeeId must have value.";
+    public static final String ERROR_MESSAGE_EMPLOYEE_NOT_FOUND = "There is no record for employee with id %s.";
+    
     private final EmployeeRepository employeeRepository;
 
     @Override
@@ -43,9 +47,21 @@ public class EmployeeServiceImpl implements EmployeeService {
                         .toList();
     }
 
+    @Override
+    public EmployeeResponse findEmployeeByID(String employeeId) {
+        if(employeeId == null || employeeId.isBlank()) {
+            throw new IllegalArgumentException(ERROR_MESSAGE_EMPLOYEE_ID_MUST_HAVE_VALUE);
+        }
+
+        Employee employee = employeeRepository.findById(employeeId)
+                                                .orElseThrow(() -> new NotFoundException(String.format(ERROR_MESSAGE_EMPLOYEE_NOT_FOUND, employeeId)));
+
+        return EmployeeConverter.toEmployeeResponse(employee);
+    }
+
     private void validateEmail(String email) {
         if(employeeRepository.findByEmail(email) != null) {
-            throw new EmailConflictException(String.format("Employee with email '%s' already exist.", email));
+            throw new ConflictException(String.format("Employee with email '%s' already exist.", email));
         }
     }
 }
