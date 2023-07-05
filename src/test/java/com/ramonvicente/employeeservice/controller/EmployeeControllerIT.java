@@ -8,6 +8,7 @@ import com.ramonvicente.employeeservice.model.Employee;
 import com.ramonvicente.employeeservice.repository.EmployeeRepository;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -41,7 +42,7 @@ public class EmployeeControllerIT {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    @BeforeAll
+    @BeforeEach
     public void setup() {
         employeeRepository.deleteAll(); //remove all data from db test
         addEmployeeToDB();

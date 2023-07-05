@@ -51,7 +51,7 @@ public class EmployeeController {
     @GetMapping(value = "/employees/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public EmployeeResponse findEmployeeById(@PathVariable String id) {
-        return employeeService.findEmployeeByID(id);
+        return employeeService.findEmployeeById(id);
     }
 
     @PutMapping(value = "/employees/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
