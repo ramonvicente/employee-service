@@ -1,6 +1,6 @@
 version: "3"
 services:
-  employeeservicedb:
+  employee-service-db:
     image: mongo:6.0
     container_name: "employee-mongodb"
     ports:
@@ -12,7 +12,6 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - 22181:2181
-  
   broker:
     image: confluentinc/cp-kafka:7.1.1
     depends_on:
