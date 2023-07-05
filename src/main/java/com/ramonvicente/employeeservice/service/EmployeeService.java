@@ -11,6 +11,7 @@ public interface EmployeeService {
 
     /**
      * Creates a new {@link Employee} in the database from the provided {@link EmployeeRequest}.
+     * 
      * @param employeeRequest DTO containing recipe data.
      * @return {@link EmployeeIdResult} DTO containing the saved {@link Employee} data.
      */
@@ -19,7 +20,16 @@ public interface EmployeeService {
     
     /**
      * Get list of all {@link Employee} from the database.
+     * 
      * @return list of {@link EmployeeResponse} DTO containing the {@link Employee} data.
      */
     public List<EmployeeResponse> findEmployees();
+
+    /**
+     * Get{@link Employee} from the database provideing employee id.
+     * 
+     * @param employeeId {@link String} the employee id.
+     * @return {@link EmployeeResponse} DTO containing the saved {@link Employee} data.
+     */
+    public EmployeeResponse findEmployeeByID(String employeeId);
 }
