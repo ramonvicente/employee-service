@@ -46,5 +46,4 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new EmailConflictException(String.format("Employee with email '%s' already exist.", email));
         }
     }
-
 }

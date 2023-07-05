@@ -72,4 +72,13 @@ public class EmployeeControllerIT {
         }
     }
 
+    @Test
+    @DisplayName("Return status ok when find employees.")
+    public void returnStatusOkWhenFindEmployees() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/v1/employees"))
+                .andExpect(MockMvcResultMatchers
+                        .status()
+                        .isOk());
+    }
 }

@@ -2,15 +2,18 @@ package com.ramonvicente.employeeservice.controller;
 
 import com.ramonvicente.employeeservice.dto.EmployeeIdResult;
 import com.ramonvicente.employeeservice.dto.EmployeeRequest;
+import com.ramonvicente.employeeservice.dto.EmployeeResponse;
 import com.ramonvicente.employeeservice.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,5 +38,11 @@ public class EmployeeController {
                     .buildAndExpand(result.getId())
                     .toUri();
         return ResponseEntity.created(location).body(result);
+    }
+
+    @GetMapping(value = "/employees", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public List<EmployeeResponse> findEmployee() {
+        return employeeService.findEmployees();
     }
 }
