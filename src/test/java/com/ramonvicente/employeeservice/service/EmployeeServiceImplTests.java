@@ -128,7 +128,7 @@ public class EmployeeServiceImplTests {
         Mockito.when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
 
         //when
-        EmployeeResponse result = employeeService.findEmployeeByID(employeeId);
+        EmployeeResponse result = employeeService.findEmployeeById(employeeId);
 
         //then
         Assertions.assertNotNull(result);
@@ -140,7 +140,7 @@ public class EmployeeServiceImplTests {
     public void throwExceptionWhenFindEmployeeByIdWithGivenEmptyArgument() {
 
         IllegalArgumentException exception = Assert.assertThrows(IllegalArgumentException.class, () -> {
-            employeeService.findEmployeeByID("");
+            employeeService.findEmployeeById("");
         });
 
         Assertions.assertEquals(EmployeeServiceImpl.ERROR_MESSAGE_EMPLOYEE_ID_MUST_HAVE_VALUE, exception.getMessage());
@@ -152,7 +152,7 @@ public class EmployeeServiceImplTests {
     public void throwExceptionWhenFindEmployeeByIdWithGivenNullArgument() {
 
         IllegalArgumentException exception = Assert.assertThrows(IllegalArgumentException.class, () -> {
-            employeeService.findEmployeeByID(null);
+            employeeService.findEmployeeById(null);
         });
 
         Assertions.assertEquals(EmployeeServiceImpl.ERROR_MESSAGE_EMPLOYEE_ID_MUST_HAVE_VALUE, exception.getMessage());
@@ -167,7 +167,7 @@ public class EmployeeServiceImplTests {
 
         //when
         NotFoundException exception = Assert.assertThrows(NotFoundException.class, () -> {
-            employeeService.findEmployeeByID(notExistingEmployeeId);
+            employeeService.findEmployeeById(notExistingEmployeeId);
         });
 
         //then
@@ -219,5 +219,45 @@ public class EmployeeServiceImplTests {
             String.format(EmployeeServiceImpl.ERROR_MESSAGE_EMPLOYEE_NOT_FOUND, notExistingEmployeeId);
 
         Assertions.assertEquals(expectedMessage, exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Should delete employee when delete employee by id given valid argument.")
+    public void deleteEmployeeWhenDeleteEmployeeById() {
+        //given
+        String employeeId = "employee-id";
+        Employee employee = Employee.builder()
+                .build();
+
+        Mockito.when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
+
+        //when
+        employeeService.deleteEmployeeById(employeeId);
+
+        //then
+        Mockito.verify(employeeRepository,  Mockito.times(1)).delete(employee);
+    }
+
+    @Test
+    @DisplayName("Should throw exception when delete employee by id given null argument.")
+    public void throwExceptionWhenDeleteEmployeeByIdWithGivenNullArgument() {
+
+        IllegalArgumentException exception = Assert.assertThrows(IllegalArgumentException.class, () -> {
+            employeeService.deleteEmployeeById(null);
+        });
+
+        Assertions.assertEquals(EmployeeServiceImpl.ERROR_MESSAGE_EMPLOYEE_ID_MUST_HAVE_VALUE, exception.getMessage());
+
+    }
+
+    @Test
+    @DisplayName("Should throw exception when delete employee by id given empty argument.")
+    public void throwExceptionWhenDeleteEmployeeByIdWithGivenEmptyArgmuent() {
+
+        IllegalArgumentException exception = Assert.assertThrows(IllegalArgumentException.class, () -> {
+            employeeService.deleteEmployeeById("");
+        });
+
+        Assertions.assertEquals(EmployeeServiceImpl.ERROR_MESSAGE_EMPLOYEE_ID_MUST_HAVE_VALUE, exception.getMessage());
     }
 }

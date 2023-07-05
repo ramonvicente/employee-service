@@ -7,7 +7,7 @@ import com.ramonvicente.employeeservice.dto.EmployeeResponse;
 import com.ramonvicente.employeeservice.model.Employee;
 import com.ramonvicente.employeeservice.repository.EmployeeRepository;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -41,7 +41,7 @@ public class EmployeeControllerIT {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    @BeforeAll
+    @BeforeEach
     public void setup() {
         employeeRepository.deleteAll(); //remove all data from db test
         addEmployeeToDB();
@@ -132,6 +132,16 @@ public class EmployeeControllerIT {
                         .status()
                         .isOk())
                 .andExpect(MockMvcResultMatchers.content().string(toJsonString(response)));
+    }
+
+    @Test
+    @DisplayName("Return status no content when delete employee by id.")
+    public void returnStatusNoContentWhenDeleteEmployeeById() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/api/v1/employees/" + EMPLOYEE_ID_1))
+                .andExpect(MockMvcResultMatchers
+                        .status()
+                        .isNoContent());
     }
 
     private String toJsonString(Object obj) {
