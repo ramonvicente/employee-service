@@ -12,7 +12,7 @@ public interface EmployeeService {
     /**
      * Creates a new {@link Employee} in the database from the provided {@link EmployeeRequest}.
      * 
-     * @param employeeRequest DTO containing recipe data.
+     * @param employeeRequest DTO containing employee data.
      * @return {@link EmployeeIdResult} DTO containing the saved {@link Employee} data.
      */
     public EmployeeIdResult createEmployee(EmployeeRequest employeeRequest);
